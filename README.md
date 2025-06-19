@@ -1,6 +1,6 @@
-# @smythos/sdk Interactive Chat Example
+# @smythos/sdk Book Assistant Example
 
-This project is a demonstration of the capabilities of the [@smythos/sdk](https://www.npmjs.com/package/@smythos/sdk), showcasing how to build and interact with AI agents in a Node.js environment. It features an interactive command-line interface (CLI) that allows you to chat with two different agents: a Book Assistant and a Crypto Assistant.
+This project is a demonstration of the capabilities of the [@smythos/sdk](https://www.npmjs.com/package/@smythos/sdk), showcasing how to build and interact with an AI agent in a Node.js environment. It features a command-line interface (CLI) that allows you to chat with a **Book Assistant** agent.
 
 This project was bootstrapped with [SRE SDK Template](https://github.com/smythos/sre-sdk-template).
 
@@ -16,8 +16,8 @@ This project was bootstrapped with [SRE SDK Template](https://github.com/smythos
 1.  Clone the repository:
 
     ```bash
-    git clone --branch interactive-chat-agent-select https://github.com/smythos/sre-project-templates.git interactive-chat-agent-select
-    cd interactive-chat-agent-select
+    git clone --branch code-agent-book-assistant https://github.com/smythos/sre-project-templates.git book-assistant-example
+    cd book-assistant-example
     ```
 
 2.  Install the dependencies:
@@ -38,22 +38,21 @@ This project was bootstrapped with [SRE SDK Template](https://github.com/smythos
 
     The file should have the following format:
 
-```json
-{
-    "default": {
-        "echo": "",
-        "openai": "sk-xxxxxx-Your-OpenAI-API-Key",
-        "anthropic": "sk-ant-xxxxxx",
-        "googleai": "xxxxxxx",
-        "groq": "gsk_xxxxxx",
-        "togetherai": "xxxxxx"
+    ```json
+    {
+        "default": {
+            "openai": "sk-xxxxxx-Your-OpenAI-API-Key",
+            "anthropic": "",
+            "googleai": "",
+            "groq": "",
+            "togetherai": ""
+        }
     }
-}
-```
+    ```
 
-for this example code, only the **openai** key is needed.
+    for this example code, only the **openai** key is needed, but you can pre-configure other models if you intend to use them.
 
-\_Note: We are are preparing a CLI tool that will help you scaffold Smyth Projects and create/manage the vault.
+    _Note: We are are preparing a CLI tool that will help you scaffold Smyth Projects and create/manage the vault._
 
 ### Running the Application
 
@@ -68,11 +67,7 @@ for this example code, only the **openai** key is needed.
     npm start
     ```
 
-You will be prompted to choose an agent to chat with.
-
 ## Example Interactions
-
-### Book Assistant
 
 **Indexing a file:**
 
@@ -144,44 +139,16 @@ The `src/index.ts` file contains commented-out examples of other ways to interac
 
 ## Features
 
--   **Interactive Agent Selection**: Choose between two distinct AI agents at startup.
 -   **Persistent Chat Sessions**: Chat history is saved and restored, allowing you to continue previous conversations.
 -   **Book Assistant**: An agent created programmatically with skills to:
     -   Index books from local files into an in-memory vector database.
     -   Search for indexed books based on your queries.
     -   Fetch book information from the [Open Library API](https://openlibrary.org/developers/api).
--   **Crypto Assistant**: An agent imported from a `.smyth` file (a visual agent configuration from SmythOS Studio) with skills to:
-    -   Search for cryptocurrencies using the [CoinGecko API](https://www.coingecko.com/en/api).
-    -   Get the current price of any cryptocurrency.
-    -   Retrieve detailed market information for specific coins.
--   **Multiple Interaction Models**: Demonstrates different ways to interact with agents, including direct skill calls, prompting, and streaming responses.
-
-## Project Structure
-
-```
-.
-├── data
-│   └── crypto-assistant.smyth  # SmythOS Studio agent definition
-├── dist
-│   └── ...                     # Compiled JavaScript files
-├── src
-│   ├── agents
-│   │   ├── BookAssistant.agent.ts   # Programmatic agent definition
-│   │   └── CryptoAssistant.agent.ts # Agent imported from .smyth file
-│   ├── utils
-│   │   └── TerminalChat.ts     # Helper for terminal chat UI
-│   └── index.ts                # Main application entry point
-├── package.json
-└── README.md
-```
+-   **Multiple Interaction Models**: Demonstrates different ways to interact with the agent, including direct skill calls, prompting, and streaming responses.
 
 ## How it Works
 
-### Agents
-
-The core of this application are the two agents, which are instances of the `Agent` class from the `@smythos/sdk`.
-
-#### Book Assistant
+The core of this application is the `BookAssistantAgent`, which is an instance of the `Agent` class from the `@smythos/sdk`.
 
 This agent is defined entirely in code in `src/agents/BookAssistant.agent.ts`. It demonstrates how to:
 
@@ -190,11 +157,23 @@ This agent is defined entirely in code in `src/agents/BookAssistant.agent.ts`. I
 -   Create an in-memory vector database (`RAMVec`) for data storage and retrieval.
 -   Add custom skills with programmatic logic (`index_book`, `lookup_book`, `get_book_info`).
 
-#### Crypto Assistant
+## Project Structure
 
-This agent is defined in a `.smyth` file (`data/crypto-assistant.smyth`), which is a format used by SmythOS Studio, a visual editor for creating AI agents. The agent is then imported and instantiated in `src/agents/CryptoAssistant.agent.ts`.
-
-This demonstrates a low-code approach to agent development, where the agent's skills and API integrations are defined visually and then imported into the code.
+```
+.
+├── data
+│   └── bitcoin.pdf             # Example file for indexing
+├── dist
+│   └── ...                     # Compiled JavaScript files
+├── src
+│   ├── agents
+│   │   └── BookAssistant.agent.ts   # Programmatic agent definition
+│   ├── utils
+│   │   └── TerminalChat.ts     # Helper for terminal chat UI
+│   └── index.ts                # Main application entry point
+├── package.json
+└── README.md
+```
 
 ## License
 

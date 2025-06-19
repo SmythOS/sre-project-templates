@@ -1,7 +1,6 @@
 import { Agent, Doc, Model } from '@smythos/sdk';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
 /**
  * This is an example of a simple agent where the skills are implemented programmatically

@@ -2,7 +2,7 @@
 
 This project is a demonstration of the capabilities of the [@smythos/sdk](https://www.npmjs.com/package/@smythos/sdk), showcasing how to build and interact with an AI agent in a Node.js environment. It features a command-line interface (CLI) that allows you to chat with a **Book Assistant** agent.
 
-This project was bootstrapped with [SRE SDK Template](https://github.com/smythos/sre-sdk-template).
+This project was bootstrapped with [SRE SDK Template](https://github.com/SmythOS/sre-project-templates/tree/code-agent-book-assistant).
 
 ## Getting Started
 

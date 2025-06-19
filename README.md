@@ -2,7 +2,7 @@
 
 This project is a demonstration of the capabilities of the [@smythos/sdk](https://www.npmjs.com/package/@smythos/sdk), showcasing how to build and interact with AI agents in a Node.js environment. It features an interactive command-line interface (CLI) that allows you to chat with two different agents: a Book Assistant and a Crypto Assistant.
 
-This project was bootstrapped with [SRE SDK Template](https://github.com/smythos/sre-sdk-template).
+This project was bootstrapped with [SRE SDK Template](https://github.com/SmythOS/sre-project-templates/tree/interactive-chat-agent-select).
 
 ## Getting Started
 
@@ -134,6 +134,28 @@ You: Provide me with all the information about the book The black Swan
 If you seek more specific information or wish to access the book, feel free to let me know!
 ```
 
+### Crypto Assistant
+
+**Getting the price of multiple cryptocurrencies:**
+
+```
+You: What is the current price of Bitcoin and TAO ?
+
+[Calling Tool] get_price {"coin_id": "bitcoin"}
+[Calling Tool] get_price {"coin_id": "lamden"}
+🤖 Assistant: The current price of Bitcoin (BTC) is $104,229 USD, and the current price of Lamden (TAO) is $0.00153937 USD.
+```
+
+**Clarifying user intent and searching for the correct coin:**
+
+```
+You: Oh I'm not talking about Lamden TAO, I was referring to Bittensor
+
+[Calling Tool] search_coins {"query":"Bittensor"}
+[Calling Tool] get_price {"coin_id":"bittensor"}
+🤖 Assistant: The current price of Bittensor (TAO) is $348.07 USD.
+```
+
 ### Other Interaction Methods
 
 The `src/index.ts` file contains commented-out examples of other ways to interact with the agents besides the interactive chat. You can uncomment them to see how to:
@@ -156,6 +178,21 @@ The `src/index.ts` file contains commented-out examples of other ways to interac
     -   Retrieve detailed market information for specific coins.
 -   **Multiple Interaction Models**: Demonstrates different ways to interact with agents, including direct skill calls, prompting, and streaming responses.
 
+## How it Works
+
+### Agents
+
+The core of this application are the two agents, which are instances of the `Agent` class from the `@smythos/sdk`.
+
+#### Book Assistant
+
+This agent is defined entirely in code in `src/agents/BookAssistant.agent.ts`. It demonstrates how to:
+
+-   Create an agent instance.
+-   Define its behavior and link it to a language model.
+-   Create an in-memory vector database (`RAMVec`) for data storage and retrieval.
+-   Add custom skills with programmatic logic (`index_book`, `lookup_book`, `get_book_info`).
+
 ## Project Structure
 
 ```
@@ -174,21 +211,6 @@ The `src/index.ts` file contains commented-out examples of other ways to interac
 ├── package.json
 └── README.md
 ```
-
-## How it Works
-
-### Agents
-
-The core of this application are the two agents, which are instances of the `Agent` class from the `@smythos/sdk`.
-
-#### Book Assistant
-
-This agent is defined entirely in code in `src/agents/BookAssistant.agent.ts`. It demonstrates how to:
-
--   Create an agent instance.
--   Define its behavior and link it to a language model.
--   Create an in-memory vector database (`RAMVec`) for data storage and retrieval.
--   Add custom skills with programmatic logic (`index_book`, `lookup_book`, `get_book_info`).
 
 #### Crypto Assistant
 

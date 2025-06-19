@@ -5,10 +5,7 @@
     "type": "module",
     "scripts": {
         "build": "cross-env BUILD=dev FORMAT=esm rollup -c ./rollup.config.js",
-        "start": "node dist/index.js",
-        "build:cjs": "cross-env BUILD=dev FORMAT=cjs rollup -c ./rollup.config.js",
-        "build:exe": "npm run build:cjs && pkg ./dist/bundle.dev.cjs --targets node18-win32-x64,node18-macos-x64,node18-linux-x64 --out-path ./dist",
-        "knip": "knip"
+        "start": "node dist/index.js"
     },
     "devDependencies": {
         "@rollup/plugin-json": "^6.1.0",

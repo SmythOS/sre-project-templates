@@ -1,0 +1,27 @@
+{
+    "name": "sre-sdk-template",
+    "version": "1.0.0",
+    "description": "",
+    "type": "module",
+    "scripts": {
+        "build": "cross-env BUILD=dev FORMAT=esm rollup -c ./rollup.config.js",
+        "start": "node dist/index.js",
+        "build:cjs": "cross-env BUILD=dev FORMAT=cjs rollup -c ./rollup.config.js",
+        "build:exe": "npm run build:cjs && pkg ./dist/bundle.dev.cjs --targets node18-win32-x64,node18-macos-x64,node18-linux-x64 --out-path ./dist",
+        "knip": "knip"
+    },
+    "devDependencies": {
+        "@rollup/plugin-json": "^6.1.0",
+        "@types/node": "^22.9.0",
+        "@types/inquirer": "^9.0.8",
+        "cross-env": "^7.0.3",
+        "rollup-plugin-esbuild": "^6.2.1",
+        "rollup-plugin-sourcemaps": "^0.6.3",
+        "rollup-plugin-typescript-paths": "^1.5.0"
+    },
+    "dependencies": {
+        "@smythos/sdk": "^1.0.5",
+        "chalk": "^5.4.1",
+        "inquirer": "^12.6.3"
+    }
+}

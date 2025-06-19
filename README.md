@@ -2,7 +2,7 @@
 
 This project is a simple demonstration of the core capabilities of the [@smythos/sdk](https://www.npmjs.com/package/@smythos/sdk), showcasing how to build and interact with a basic AI agent in a Node.js environment. It features a "Storyteller" agent that runs directly and demonstrates several interaction patterns.
 
-This project was bootstrapped with [SRE SDK Template](https://github.com/SmythOS/sre-project-templates/tree/code-agent-minimal).
+This project was bootstrapped with [SRE SDK Template : Branch code-agent-minimal](https://github.com/SmythOS/sre-project-templates/tree/code-agent-minimal).
 
 ## How it Works
 

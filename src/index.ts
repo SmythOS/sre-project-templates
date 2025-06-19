@@ -1,39 +1,89 @@
-//This agent is implemented in BookAssistant.agent.ts
-import BookAssistantAgent from './agents/BookAssistant.agent';
+import { Agent, TLLMEvent } from '@smythos/sdk';
+import chalk from 'chalk';
 
-//a helper function to run a chat session in the terminal
-import { runChat } from './utils/TerminalChat';
+//We create the agent instance without any skills, using just an LLM with a behavior
+const agent = new Agent({
+    //the name of the agent, this is how the agent will identify itself
+    name: 'Storyteller',
 
-//In this example we wanted to demo something cooler
-//We are using inquirer to ask the user which agent they want to chat with
-//then we start a chat session with the selected agent
+    //here we are using a builtin model
+    //note that we are not passing an apiKey because we will rely on smyth vault for the model credentials
+    model: 'gpt-4o-mini',
 
-//Create a chat object from the agent
-
-//this is used to identify the chat session, using the same ID will load the previous chat session
-const sessionId = `my-chat-session-001`;
-const chat = BookAssistantAgent.chat({
-    id: sessionId,
-    persist: true,
+    //the behavior of the agent, this describes the personnality and behavior of the agent
+    behavior: 'You are a storyteller that can write fantastic stories.',
 });
 
-//Run the chat session in the terminal
-runChat(chat);
+agent.addSkill({
+    name: 'greeting',
+    description: 'Say hello to the user',
+    process: async () => {
+        return `Hello World!`;
+    },
+});
 
 //Below you can find other ways to interact with the agent
 
-//1. call a skill directly
-// const result = await BookAssistantAgent.call('get_book_info', {
-//     book_name: 'The Black Swan',
-// });
-// console.log(result);
+async function main() {
+    //1. call a skill directly
 
-//2. prompt
-//const result = await BookAssistantAgent.prompt('Who is the author of the book "The Black Swan"?');
-//console.log(result);
+    console.log(`${chalk.blue('1. Calling skill directly')}`);
+    const result1 = await agent.call('greeting');
+    console.log(result1);
 
-//3. prompt and stream response
-// const stream = await BookAssistantAgent.prompt('Who is the author of the book "The Black Swan"?').stream();
-// stream.on(TLLMEvent.Content, (content) => {
-//     console.log(content);
-// });
+    console.log(`${chalk.white('--------------------------------')}`);
+
+    //2. prompt
+    console.log(`${chalk.blue('2. Prompting the agent')}`);
+    console.log(`${chalk.gray('Writing story, please wait...')}`);
+    const result2 = await agent.prompt('Write a short story about a cat.');
+
+    console.log(result2);
+
+    console.log(`${chalk.white('--------------------------------')}`);
+
+    //3. prompt and stream response
+    console.log(`${chalk.blue('3. Prompting the agent and streaming response')}`);
+    const stream = await agent.prompt('Write a short story about a cat.').stream();
+    stream.on(TLLMEvent.Content, (content) => {
+        process.stdout.write(content);
+    });
+
+    //This promise will resolve once the stream response above is complete
+    const waitStreamPromise = new Promise((resolve, reject) => {
+        stream.on(TLLMEvent.End, () => {
+            resolve(true);
+        });
+    });
+
+    await waitStreamPromise;
+
+    console.log(`${chalk.white('--------------------------------')}`);
+
+    //4. chat
+    console.log(`${chalk.blue('4. Chatting with the agent')}`);
+    const chat = agent.chat({
+        id: 'my-chat-session-001',
+        persist: false, //<=== we don't want to persist the chat session in local storage, it will be lost when the program ends
+    });
+
+    console.log(`${chalk.green('4.1. Prompting the chat')}`);
+    console.log(`${chalk.gray('Writing story, please wait...')}`);
+    const result4 = await chat.prompt('Write a short story about a cat called "Whiskers".');
+
+    console.log(result4);
+
+    console.log(`${chalk.white('--------------------------------')}`);
+
+    console.log(`${chalk.green('4.2. Prompting the chat and streaming response')}`);
+    const stream2 = await chat.prompt('Rewrite the story and introduce a new character, a dog called "Rex".').stream();
+
+    stream2.on(TLLMEvent.Content, (content) => {
+        process.stdout.write(content);
+    });
+
+    console.log(`${chalk.white('--------------------------------')}`);
+    console.log(`${chalk.green('Done')}`);
+}
+
+main();

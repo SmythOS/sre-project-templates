@@ -1,19 +1,8 @@
-# @smythos/sdk Minimal Code Agent Example
+# @smythos/sdk Empty Template
 
-This project is a simple demonstration of the core capabilities of the [@smythos/sdk](https://www.npmjs.com/package/@smythos/sdk), showcasing how to build and interact with a basic AI agent in a Node.js environment. It features a "Storyteller" agent that runs directly and demonstrates several interaction patterns.
+This project is an empty template to get started with [@smythos/sdk](https://www.npmjs.com/package/@smythos/sdk).
 
-This project was bootstrapped with [SRE SDK Template : Branch code-agent-minimal](https://github.com/SmythOS/sre-project-templates/tree/code-agent-minimal).
-
-## How it Works
-
-The core of this application is a simple `Agent` instance created in `src/index.ts`. The script demonstrates four fundamental ways to interact with an agent:
-
-1.  **Direct Skill Call**: Calling a predefined `greeting` skill on the agent.
-2.  **Prompt**: Sending a prompt to the agent and waiting for the full response.
-3.  **Streaming Prompt**: Sending a prompt and receiving the response as a stream of events.
-4.  **Chat Interface**: Creating a non-persistent chat session to have a conversational interaction.
-
-The example is designed to run from top to bottom, logging the output of each interaction type to the console.
+This project was bootstrapped with [SRE SDK Template : Branch sdk-empty](https://github.com/SmythOS/sre-project-templates/tree/sdk-empty).
 
 ## Getting Started
 
@@ -80,6 +69,10 @@ The example is designed to run from top to bottom, logging the output of each in
     ```
 
     The application will execute `src/index.ts`, demonstrating the different agent interaction methods in your terminal.
+
+### Implementing AI Agents
+
+Read the [docs](https://smythos.github.io/sre/sdk/) to learn how to implement AI agents.
 
 ## License
 

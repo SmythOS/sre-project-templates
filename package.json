@@ -15,7 +15,7 @@
         "rollup-plugin-typescript-paths": "^1.5.0"
     },
     "dependencies": {
-        "@smythos/sdk": "^1.0.5",
+        "@smythos/sdk": "^1.0.11",
         "chalk": "^5.4.1"
     }
 }

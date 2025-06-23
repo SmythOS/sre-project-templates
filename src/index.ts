@@ -1,3 +1,9 @@
+//IMPORTANT NOTE : Your API keys are configured in one of the following files :
+//  .smyth/.sre/vault.json
+//  ~/.smyth/.sre/vault.json
+
+//Edit the vault.json file to update your API keys
+
 import { Agent, TLLMEvent } from '@smythos/sdk';
 import chalk from 'chalk';
 
@@ -28,6 +34,7 @@ async function main() {
     //1. call a skill directly
 
     console.log(`${chalk.blue('1. Calling skill directly')}`);
+
     const result1 = await agent.call('greeting');
     console.log(result1);
 
@@ -36,6 +43,7 @@ async function main() {
     //2. prompt
     console.log(`${chalk.blue('2. Prompting the agent')}`);
     console.log(`${chalk.gray('Writing story, please wait...')}`);
+
     const result2 = await agent.prompt('Write a short story about a cat.');
 
     console.log(result2);
@@ -44,6 +52,7 @@ async function main() {
 
     //3. prompt and stream response
     console.log(`${chalk.blue('3. Prompting the agent and streaming response')}`);
+
     const stream = await agent.prompt('Write a short story about a cat.').stream();
     stream.on(TLLMEvent.Content, (content) => {
         process.stdout.write(content);

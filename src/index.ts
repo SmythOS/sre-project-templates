@@ -1,12 +1,12 @@
-//This agent is implemented in BookAssistant.agent.ts
+//IMPORTANT NOTE : Your API keys are configured in one of the following files :
+//  .smyth/.sre/vault.json
+//  ~/.smyth/.sre/vault.json
+
+//Edit the vault.json file to update your API keys
+
 import BookAssistantAgent from './agents/BookAssistant.agent';
-
-//This agent is implemented in CryptoAssistant.agent.ts
 import CryptoAssistantAgent from './agents/CryptoAssistant.agent';
-
-//a helper function to run a chat session in the terminal
 import { runChat } from './utils/TerminalChat';
-
 import inquirer from 'inquirer';
 
 //In this example we wanted to demo something cooler

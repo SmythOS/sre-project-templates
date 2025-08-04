@@ -24,7 +24,7 @@ agent.addSkill({
     name: 'greeting',
     description: 'Say hello to the user',
     process: async () => {
-        return `Hello World!`;
+        return 'Hello World!';
     },
 });
 
@@ -66,33 +66,6 @@ async function main() {
     });
 
     await waitStreamPromise;
-
-    console.log(`${chalk.white('--------------------------------')}`);
-
-    //4. chat
-    console.log(`${chalk.blue('4. Chatting with the agent')}`);
-    const chat = agent.chat({
-        id: 'my-chat-session-001',
-        persist: false, //<=== we don't want to persist the chat session in local storage, it will be lost when the program ends
-    });
-
-    console.log(`${chalk.green('4.1. Prompting the chat')}`);
-    console.log(`${chalk.gray('Writing story, please wait...')}`);
-    const result4 = await chat.prompt('Write a short story about a cat called "Whiskers".');
-
-    console.log(result4);
-
-    console.log(`${chalk.white('--------------------------------')}`);
-
-    console.log(`${chalk.green('4.2. Prompting the chat and streaming response')}`);
-    const stream2 = await chat.prompt('Rewrite the story and introduce a new character, a dog called "Rex".').stream();
-
-    stream2.on(TLLMEvent.Content, (content) => {
-        process.stdout.write(content);
-    });
-
-    console.log(`${chalk.white('--------------------------------')}`);
-    console.log(`${chalk.green('Done')}`);
 }
 
 main();

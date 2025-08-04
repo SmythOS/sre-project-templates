@@ -4,18 +4,33 @@
     "description": "",
     "type": "module",
     "scripts": {
-        "build": "rollup -c ./rollup.config.js",
-        "start": "node dist/index.js"
+        "build:dev": "rollup -c ./rollup.config.js",
+        "build:prod": "cross-env NODE_ENV=production rollup -c ./rollup.config.js",
+        "build:dev:exe": "cross-env BUILD_SEA=true rollup -c ./rollup.config.js",
+        "build:prod:exe": "cross-env NODE_ENV=production BUILD_SEA=true rollup -c ./rollup.config.js",
+        "build:dev:exe:win": "cross-env BUILD_SEA=true SEA_PLATFORMS=win rollup -c ./rollup.config.js",
+        "build:prod:exe:win": "cross-env NODE_ENV=production BUILD_SEA=true SEA_PLATFORMS=win rollup -c ./rollup.config.js",
+        "build:dev:exe:linux": "cross-env BUILD_SEA=true SEA_PLATFORMS=linux rollup -c ./rollup.config.js",
+        "build:prod:exe:linux": "cross-env NODE_ENV=production BUILD_SEA=true SEA_PLATFORMS=linux rollup -c ./rollup.config.js",
+        "build:dev:exe:macos": "cross-env BUILD_SEA=true SEA_PLATFORMS=macos rollup -c ./rollup.config.js",
+        "build:prod:exe:macos": "cross-env NODE_ENV=production BUILD_SEA=true SEA_PLATFORMS=macos rollup -c ./rollup.config.js",
+        "sea:bundle": "node scripts/sea-bundler.js",
+        "start": "node dist/index.cjs"
     },
     "devDependencies": {
+        "@rollup/plugin-commonjs": "^28.0.6",
         "@rollup/plugin-json": "^6.1.0",
+        "@rollup/plugin-node-resolve": "^16.0.1",
         "@types/node": "^22.9.0",
+        "cross-env": "^7.0.3",
+        "postject": "^1.0.0-alpha.6",
         "rollup-plugin-esbuild": "^6.2.1",
         "rollup-plugin-sourcemaps": "^0.6.3",
         "rollup-plugin-typescript-paths": "^1.5.0"
     },
     "dependencies": {
-        "@smythos/sdk": "^1.0.33",
-        "chalk": "^5.4.1"
+        "@smythos/sdk": "^1.0.34",
+        "chalk": "^5.4.1",
+        "pkce-challenge": "^5.0.0"
     }
 }

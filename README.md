@@ -2,7 +2,9 @@
 
 This project is a simple demonstration of the core capabilities of the [@smythos/sdk](https://www.npmjs.com/package/@smythos/sdk), showcasing how to build and interact with a basic AI agent in a Node.js environment. It features a "Storyteller" agent that runs directly and demonstrates several interaction patterns.
 
-This project was bootstrapped with [SRE SDK Template : Branch code-agent-minimal](https://github.com/SmythOS/sre-project-templates/tree/code-agent-minimal).
+The project also demonstrates how to build a SEA executable for Windows, Linux, and macOS.
+
+This project was bootstrapped with [SRE SDK Template : Branch code-agent-minimal-exe-bundle](https://github.com/SmythOS/sre-project-templates/tree/code-agent-minimal-exe-bundle).
 
 ## How it Works
 
@@ -11,7 +13,6 @@ The core of this application is a simple `Agent` instance created in `src/index.
 1.  **Direct Skill Call**: Calling a predefined `greeting` skill on the agent.
 2.  **Prompt**: Sending a prompt to the agent and waiting for the full response.
 3.  **Streaming Prompt**: Sending a prompt and receiving the response as a stream of events.
-4.  **Chat Interface**: Creating a non-persistent chat session to have a conversational interaction.
 
 The example is designed to run from top to bottom, logging the output of each interaction type to the console.
 
@@ -27,7 +28,7 @@ The example is designed to run from top to bottom, logging the output of each in
 1.  Clone the repository:
 
     ```bash
-    git clone --branch code-agent-minimal https://github.com/smythos/sre-project-templates.git simple-agent-example
+    git clone --branch code-agent-minimal-exe-bundle https://github.com/smythos/sre-project-templates.git simple-agent-example
     cd simple-agent-example
     ```
 
@@ -80,6 +81,20 @@ The example is designed to run from top to bottom, logging the output of each in
     ```
 
     The application will execute `src/index.ts`, demonstrating the different agent interaction methods in your terminal.
+
+### Building the SEA Executable for Windows, Linux, and macOS
+
+1.  Build the project for the specific platform:
+
+    ```bash
+    npm run build:dev:exe:win # Windows
+    npm run build:dev:exe:linux # Linux
+    npm run build:dev:exe:macos # macOS
+    ```
+
+    The executable will be built in the `dist/exe` directory.
+
+_Note: if you want to build for production just replace `build:dev` with `build:prod` in the commands above._
 
 ## License
 

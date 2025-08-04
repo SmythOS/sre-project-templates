@@ -3,40 +3,65 @@ import path from 'path';
 import esbuild from 'rollup-plugin-esbuild';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import { typescriptPaths } from 'rollup-plugin-typescript-paths';
-import colorfulLogs from './scripts/rollup-colorfulLogs';
+import colorfulLogs from './scripts/rollup-colorfulLogs.js';
+import seaPlugin from './scripts/rollup-sea-plugin.js';
 
-// Function to automatically mark all non-local imports as external
-// avoids warning message about external dependencies
-const isExternal = (id, ...overArgs) => {
-    const _isExternal = !id.startsWith('.') && !path.isAbsolute(id);
-    return _isExternal;
-};
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+
+const isProduction = process.env.NODE_ENV === 'production';
+const enableSEA = process.env.BUILD_SEA === 'true';
+const seaPlatforms = process.env.SEA_PLATFORMS ? process.env.SEA_PLATFORMS.split(',') : ['win', 'linux', 'macos'];
 
 const config = {
-    input: 'src/index.ts',
+    input: './src/index.ts',
     output: {
-        file: 'dist/index.js',
-        format: 'es',
-        sourcemap: true,
+        file: './dist/index.cjs', // CommonJS output
+        format: 'cjs', // Specify the CommonJS format
+        sourcemap: !isProduction, // No sourcemap in production
+        inlineDynamicImports: true, // Inline all dynamic imports into one file
     },
-    external: isExternal,
+    // Bundle ALL dependencies to ensure portability
     plugins: [
         colorfulLogs('Smyth Builder'),
+        resolve({
+            browser: false, // Allow bundling of modules from `node_modules`
+            preferBuiltins: true, // Prefer Node.js built-in modules
+            mainFields: ['module', 'main'], // Ensure Node.js package resolution
+            extensions: ['.js', '.ts', '.json'], // Resolve these extensions
+            exportConditions: ['node'], // Use Node.js conditions
+        }),
+        commonjs({
+            include: /node_modules/, // Convert CommonJS modules from node_modules
+            requireReturnsDefault: 'auto', // Handle default exports correctly
+            ignoreDynamicRequires: false, // Don't ignore dynamic requires
+        }), // Convert CommonJS modules to ES6 for Rollup to bundle them
         json(),
+
         typescriptPaths({
             tsconfig: './tsconfig.json',
             preserveExtensions: true,
             nonRelative: false,
         }),
-
-        sourcemaps(),
         esbuild({
-            sourceMap: true,
-            minify: false,
-            treeShaking: false,
-            sourcesContent: true,
+            sourceMap: !isProduction,
+            minify: isProduction, // Enable minification in production
+            treeShaking: true, // Enable tree shaking
+            target: 'node18',
+            define: {
+                'process.env.NODE_ENV': isProduction ? '"production"' : '"development"',
+                // Remove debug code in production
+                'process.env.DEBUG': isProduction ? 'undefined' : 'process.env.DEBUG',
+            },
         }),
-    ],
+        !isProduction && sourcemaps(),
+        seaPlugin({
+            enabled: enableSEA,
+            platforms: seaPlatforms,
+            outputDir: 'dist/exe',
+            seaConfigPath: 'sea-config.json',
+        }),
+    ].filter(Boolean),
 };
 
 export default config;

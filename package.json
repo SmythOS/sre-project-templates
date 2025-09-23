@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "build": "cross-env BUILD=dev FORMAT=esm rollup -c ./rollup.config.js",
-        "dbgstart": "node --enable-source-maps src/index.ts",
+        "dbgstart": "node --enable-source-maps dist/index.js",
         "start": "node dist/index.js"
     },
     "devDependencies": {
@@ -18,7 +18,7 @@
         "rollup-plugin-typescript-paths": "^1.5.0"
     },
     "dependencies": {
-        "@smythos/sdk": "^1.1.15",
+        "@smythos/sdk": "^1.1.16",
         "chalk": "^5.4.1",
         "inquirer": "^12.6.3"
     }

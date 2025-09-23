@@ -15,6 +15,7 @@
         "build:dev:exe:macos": "cross-env BUILD_SEA=true SEA_PLATFORMS=macos rollup -c ./rollup.config.js",
         "build:prod:exe:macos": "cross-env NODE_ENV=production BUILD_SEA=true SEA_PLATFORMS=macos rollup -c ./rollup.config.js",
         "sea:bundle": "node scripts/sea-bundler.js",
+        "dbgstart": "node --enable-source-maps src/index.ts",
         "start": "node dist/index.cjs"
     },
     "devDependencies": {
@@ -29,7 +30,7 @@
         "rollup-plugin-typescript-paths": "^1.5.0"
     },
     "dependencies": {
-        "@smythos/sdk": "^1.1.13",
+        "@smythos/sdk": "^1.1.14",
         "chalk": "^5.4.1",
         "pkce-challenge": "^5.0.0"
     }

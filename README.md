@@ -9,4 +9,5 @@ Each branch contains a template for a specific project.
 - [Minimal SDK Agent](https://github.com/SmythOS/sre-project-templates/tree/code-agent-minimal) : Comes with a minimal agent that showcases Agent implementation basics
 - [Interactive Book Assistant](https://github.com/SmythOS/sre-project-templates/tree/code-agent-book-assistant) : A fully functional agent with interactive chat
 - [Interactive Chat with Two Agents](https://github.com/SmythOS/sre-project-templates/tree/interactive-chat-agent-select) : Two different agents implementations, one using pure code, and one loaded from a .smyth file, you can select which agent to chat with
-- [Implementing Custom](https://github.com/SmythOS/sre-project-templates/tree/custom-components) : Implementing Custom Components
+- [Custom Components](https://github.com/SmythOS/sre-project-templates/tree/custom-components) : Implementing Custom Components
+- [SmythOS Electron Starter Project](https://github.com/SmythOS/sre-project-templates/tree/smythos-electron-starter-project) : A starter project for creating a desktop application using SmythOS

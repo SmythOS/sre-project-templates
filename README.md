@@ -2,6 +2,12 @@
 
 A modern Electron Demo App, built with TypeScript and bundled with Rollup, featuring a chat interface powered by SmythOS SDK for cryptocurrency price tracking.
 
+
+
+https://github.com/user-attachments/assets/5b0e1faa-ee93-4f94-bafc-1e59e1445d45
+
+
+
 ## Project Structure
 
 ```

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Chat Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            background: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: transparent;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            -webkit-app-region: drag;
+            overflow: hidden;
+            isolation: isolate;
+            /* Create a new stacking context */
+        }
+
+        /* Resize handles */
+        .resize-handle {
+            position: fixed;
+            z-index: 99999;
+            -webkit-app-region: no-drag;
+            pointer-events: auto;
+        }
+
+        .resize-n {
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            cursor: n-resize;
+        }
+
+        .resize-s {
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            cursor: s-resize;
+        }
+
+        .resize-e {
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 8px;
+            cursor: e-resize;
+        }
+
+        .resize-w {
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 8px;
+            cursor: w-resize;
+        }
+
+        .resize-ne {
+            top: 0;
+            right: 0;
+            width: 15px;
+            height: 15px;
+            cursor: ne-resize;
+        }
+
+        .resize-nw {
+            top: 0;
+            left: 0;
+            width: 15px;
+            height: 15px;
+            cursor: nw-resize;
+        }
+
+        .resize-se {
+            bottom: 0;
+            right: 0;
+            width: 15px;
+            height: 15px;
+            cursor: se-resize;
+        }
+
+        .resize-sw {
+            bottom: 0;
+            left: 0;
+            width: 15px;
+            height: 15px;
+            cursor: sw-resize;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #45c9a9 0%, #13947d 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+            border-radius: 10px 10px 0px 0px;
+            position: relative;
+            -webkit-app-region: no-drag;
+            user-select: none;
+            box-shadow: 0 1px 20px #5555556b;
+            z-index: 100;
+            flex-shrink: 0;
+
+        }
+
+        .header.dragging {
+            cursor: grabbing;
+        }
+
+        /* Make header text selectable but still draggable */
+        .header h1,
+        .header p {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 0.30rem;
+            right: 0.30rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 20%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.5;
+            transition: all 0.2s ease;
+            -webkit-app-region: no-drag;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .header:hover .close-button {
+            opacity: 1;
+        }
+
+        .close-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+
+        }
+
+        .close-button:active {
+            transform: scale(0.95);
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 1.5rem;
+            padding-right: 0.5rem;
+            background-color: rgba(248, 249, 250, 0.5);
+            -webkit-app-region: no-drag;
+            position: relative;
+            z-index: 1;
+
+        }
+
+        .chat-container.dragging {
+            cursor: grabbing;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            -webkit-app-region: no-drag;
+            position: relative;
+            z-index: 1;
+        }
+
+        .message.user {
+            align-items: flex-end;
+        }
+
+        .message.assistant {
+            align-items: flex-start;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            -webkit-user-select: text;
+            user-select: text;
+            -webkit-app-region: no-drag;
+            cursor: text;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #45c9a9 0%, #13947d 100%);
+
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.assistant .message-content {
+            background: rgb(227 227 227 / 90%);
+            color: #333;
+            /* border: 1px solid rgba(225, 229, 233, 0.8); */
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-label {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+            -webkit-app-region: no-drag;
+        }
+
+        /* Tool container - collapsible structure */
+        .tool-container {
+            margin: 0.75rem 0;
+
+            border-radius: 8px;
+
+            overflow: hidden;
+            transition: all 0.3s ease;
+            -webkit-app-region: no-drag;
+            cursor: default;
+        }
+
+        .tool-container:hover {}
+
+        .tool-container:hover .tool-title {
+            color: #9b9b9bad;
+        }
+
+        /* Tool header - clickable to collapse/expand */
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+
+        }
+
+        .tool-header:hover {}
+
+        .tool-header:active {}
+
+        /* Toggle icon */
+        .tool-toggle {
+            font-size: 0.9rem;
+            color: #9b9b9b5c;
+            transition: transform 0.3s ease;
+            font-weight: bold;
+            font-family: monospace;
+            display: inline-block;
+            transform: rotate(90deg);
+            /* Points down when open */
+        }
+
+        .tool-container.collapsed .tool-toggle {
+            transform: rotate(0deg);
+            /* Points right when collapsed */
+        }
+
+        /* Tool title */
+        .tool-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #9b9b9b5c;
+            flex: 1;
+        }
+
+        /* Tool content area */
+        .tool-content {
+            padding: 0 1rem;
+            background: #ffffff;
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            box-shadow: inset 0 0px 9px #87878757;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+
+        .tool-container.collapsed .tool-content {
+            max-height: 0;
+            padding: 0 1rem;
+            overflow: hidden;
+        }
+
+        /* Tool arguments */
+        .tool-arguments {
+            padding: 0.5rem 0.75rem;
+            /* margin-bottom: 0.75rem; */
+            /*background: #f8f9fa;*/
+            /* border-left: 3px solid #45c9a9; */
+            border-radius: 4px 4px 0px 0px;
+            font-size: 0.75rem;
+            color: #6c757d;
+            font-family: 'Courier New', monospace;
+            word-wrap: break-word;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        /* Tool result container (placeholder and actual result) */
+        .tool-result-container {
+            padding: 0.75rem;
+            background: #fff9e6;
+            border-radius: 0px 0px 6px 6px;
+            font-size: 0.8rem;
+            color: #856404;
+            font-style: italic;
+        }
+
+        .tool-result-standalone,
+        .tool-result-content {
+            padding: 0.75rem;
+            background: #cfcfcf2e;
+            /* border-left: 4px solid #28a745; */
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: #155724;
+            font-family: 'Courier New', monospace;
+            max-height: 100px;
+            overflow-y: auto;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            -webkit-user-select: text;
+            user-select: text;
+            margin-bottom: 0.2rem;
+        }
+
+
+        /* Scrollbar for tool result content */
+        .tool-result-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .tool-result-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .tool-result-content::-webkit-scrollbar-thumb {
+            background: #bebebe31;
+            border-radius: 4px;
+        }
+
+        .tool-result-content::-webkit-scrollbar-thumb:hover {
+            background: #9c9c9c80;
+        }
+
+        .input-container {
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 2px solid rgba(225, 229, 233, 0.5);
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+            -webkit-app-region: no-drag;
+            box-shadow: 0 -1px 20px #5555556b;
+            position: relative;
+            z-index: 100;
+            flex-shrink: 0;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid rgba(225, 229, 233, 0.8);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0e6c5c8c;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+            resize: vertical;
+            min-height: 50px;
+            max-height: 150px;
+            line-height: 1.4;
+            background: #13947d17;
+            -webkit-app-region: no-drag;
+            border: 0px;
+        }
+
+        #messageInput::placeholder {
+            color: #b8b8b8;
+            opacity: 0.6;
+        }
+
+        #messageInput:focus {
+            outline: none;
+            border-color: #45c9a9;
+        }
+
+        #sendBtn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #45c9a9 0%, #13947d 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            -webkit-app-region: no-drag;
+        }
+
+        #sendBtn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(182, 182, 182, 0.4);
+        }
+
+        #sendBtn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        #sendBtn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 0.75rem 1rem;
+            max-width: 80%;
+            margin-bottom: 1rem;
+            -webkit-app-region: no-drag;
+        }
+
+        .typing-indicator.active {
+            display: block;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .typing-dots span {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: #45c9a9;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.5;
+            }
+
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            -webkit-app-region: no-drag;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        /* Custom scrollbar */
+        .chat-container::-webkit-scrollbar {
+            width: 12px;
+            cursor: default;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            cursor: default;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #13947c62;
+            border-radius: 5px;
+            border: 2px solid #f1f1f1;
+            cursor: pointer;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: #45c9a9;
+        }
+
+        /* Make scrollbar area non-draggable by adding padding */
+        .chat-container::-webkit-scrollbar-button {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Resize handles -->
+    <div class="resize-handle resize-n" data-direction="n"></div>
+    <div class="resize-handle resize-s" data-direction="s"></div>
+    <div class="resize-handle resize-e" data-direction="e"></div>
+    <div class="resize-handle resize-w" data-direction="w"></div>
+    <div class="resize-handle resize-ne" data-direction="ne"></div>
+    <div class="resize-handle resize-nw" data-direction="nw"></div>
+    <div class="resize-handle resize-se" data-direction="se"></div>
+    <div class="resize-handle resize-sw" data-direction="sw"></div>
+
+    <div class="container">
+        <div class="header">
+            <button class="close-button" id="closeBtn" title="Close">×</button>
+            <h1>Crypto Chat Assistant</h1>
+            <p>A Demo SmythOS AI Agent running on Electron!</p>
+        </div>
+
+        <div class="chat-container" id="chatContainer">
+            <div class="message assistant">
+                <span class="message-label">Assistant</span>
+                <!-- @prettier-ignore -->
+                <div class="message-content">Hello! Ask me anything about crypto assets.</div>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <textarea id="messageInput" placeholder="Type your message here... (Shift+Enter for new line)"
+                autocomplete="off" rows="1"></textarea>
+            <button id="sendBtn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Manual window dragging for header and chat container
+        const { ipcRenderer } = require('electron');
+
+        function setupDragging(element) {
+            let isDragging = false;
+            let dragStartX, dragStartY;
+
+            element.addEventListener('mousedown', (e) => {
+                // Don't drag if clicking on interactive elements
+                if (e.target.tagName === 'BUTTON' ||
+                    e.target.tagName === 'INPUT' ||
+                    e.target.tagName === 'TEXTAREA' ||
+                    e.target.closest('.close-button') ||
+                    e.target.closest('.message-content') ||
+                    e.target.closest('.tool-container')) {
+                    return;
+                }
+
+                // Check if clicking on scrollbar area (right edge of container)
+                const rect = element.getBoundingClientRect();
+                const scrollbarWidth = element.offsetWidth - element.clientWidth;
+                if (e.clientX > rect.right - scrollbarWidth - 5) {
+                    return; // Clicked on or near scrollbar
+                }
+
+                isDragging = true;
+                dragStartX = e.screenX;
+                dragStartY = e.screenY;
+                element.classList.add('dragging');
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+
+                const deltaX = e.screenX - dragStartX;
+                const deltaY = e.screenY - dragStartY;
+
+                // Use Electron IPC to move the window
+                ipcRenderer.send('drag-window', { deltaX, deltaY });
+
+                dragStartX = e.screenX;
+                dragStartY = e.screenY;
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    element.classList.remove('dragging');
+                }
+            });
+        }
+
+        // Setup dragging for header and chat container
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.querySelector('.header');
+            const chatContainer = document.getElementById('chatContainer');
+
+            if (header) setupDragging(header);
+            if (chatContainer) setupDragging(chatContainer);
+        });
+    </script>
+    <script src="dist/renderer.js"></script>
+</body>
+
+</html>

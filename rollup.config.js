@@ -3,7 +3,7 @@ import path from 'path';
 import esbuild from 'rollup-plugin-esbuild';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import { typescriptPaths } from 'rollup-plugin-typescript-paths';
-import colorfulLogs from './scripts/rollup-colorfulLogs';
+import colorfulLogs from './scripts/rollup-colorfulLogs.js';
 
 // Function to automatically mark all non-local imports as external
 // avoids warning message about external dependencies

@@ -4,95 +4,43 @@
 
 //Edit the vault.json file to update your API keys
 
-import { Agent, TLLMEvent } from '@smythos/sdk';
+import { Agent, TLLMEvent, Model, Scope } from '@smythos/sdk';
+import { SRE } from '@smythos/sdk/core';
 import chalk from 'chalk';
 
-//We create the agent instance without any skills, using just an LLM with a behavior
-const agent = new Agent({
-    //the name of the agent, this is how the agent will identify itself
-    name: 'Storyteller',
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-    //here we are using a builtin model
-    //note that we are not passing an apiKey because we will rely on smyth vault for the model credentials
-    model: 'gpt-4o-mini',
+SRE.init({
+    //Telemetry Service configuration
+    Telemetry: {
+        Connector: 'OTel', //we use OTel (OpenTelemetry) connector
+        Settings: {
+            endpoint: 'http://localhost:4318',
 
-    //the behavior of the agent, this describes the personnality and behavior of the agent
-    behavior: 'You are a storyteller that can write fantastic stories.',
-});
-
-agent.addSkill({
-    name: 'greeting',
-    description: 'Say hello to the user',
-    process: async () => {
-        return `Hello World!`;
+            //Optional settings
+            //serviceName: 'smythos',
+            //serviceVersion: '1.0.0',
+            // headers: {
+            //     'Authorization': 'Bearer your-api-key',
+            // }
+        },
     },
 });
 
-//Below you can find other ways to interact with the agent
-
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 async function main() {
-    //1. call a skill directly
+    //.smyth file path
+    const agentPath = path.resolve(__dirname, './data', 'crypto-info-agent.smyth');
 
-    console.log(`${chalk.blue('1. Calling skill directly')}`);
-
-    const result1 = await agent.call('greeting');
-    console.log(result1);
-
-    console.log(`${chalk.white('--------------------------------')}`);
-
-    //2. prompt
-    console.log(`${chalk.blue('2. Prompting the agent')}`);
-    console.log(`${chalk.gray('Writing story, please wait...')}`);
-
-    const result2 = await agent.prompt('Write a short story about a cat.');
-
-    console.log(result2);
-
-    console.log(`${chalk.white('--------------------------------')}`);
-
-    //3. prompt and stream response
-    console.log(`${chalk.blue('3. Prompting the agent and streaming response')}`);
-
-    const stream = await agent.prompt('Write a short story about a cat.').stream();
-    stream.on(TLLMEvent.Content, (content) => {
-        process.stdout.write(content);
+    //Importing the agent workflow
+    const agent = Agent.import(agentPath, {
+        model: Model.OpenAI('gpt-4o'),
     });
 
-    //This promise will resolve once the stream response above is complete
-    const waitStreamPromise = new Promise((resolve, reject) => {
-        stream.on(TLLMEvent.End, () => {
-            resolve(true);
-        });
-    });
+    const result = await agent.prompt('What are the current prices of Bitcoin and Ethereum ?');
 
-    await waitStreamPromise;
-
-    console.log(`${chalk.white('--------------------------------')}`);
-
-    //4. chat
-    console.log(`${chalk.blue('4. Chatting with the agent')}`);
-    const chat = agent.chat({
-        id: 'my-chat-session-001',
-        persist: false, //<=== we don't want to persist the chat session in local storage, it will be lost when the program ends
-    });
-
-    console.log(`${chalk.green('4.1. Prompting the chat')}`);
-    console.log(`${chalk.gray('Writing story, please wait...')}`);
-    const result4 = await chat.prompt('Write a short story about a cat called "Whiskers".');
-
-    console.log(result4);
-
-    console.log(`${chalk.white('--------------------------------')}`);
-
-    console.log(`${chalk.green('4.2. Prompting the chat and streaming response')}`);
-    const stream2 = await chat.prompt('Rewrite the story and introduce a new character, a dog called "Rex".').stream();
-
-    stream2.on(TLLMEvent.Content, (content) => {
-        process.stdout.write(content);
-    });
-
-    console.log(`${chalk.white('--------------------------------')}`);
-    console.log(`${chalk.green('Done')}`);
+    console.log(result);
 }
 
 main();

@@ -3,6 +3,7 @@ import path from 'path';
 import esbuild from 'rollup-plugin-esbuild';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import { typescriptPaths } from 'rollup-plugin-typescript-paths';
+import copy from 'rollup-plugin-copy';
 import colorfulLogs from './scripts/rollup-colorfulLogs.js';
 
 // Function to automatically mark all non-local imports as external
@@ -28,7 +29,9 @@ const config = {
             preserveExtensions: true,
             nonRelative: false,
         }),
-
+        copy({
+            targets: [{ src: 'data/**/*', dest: 'dist/data' }],
+        }),
         sourcemaps(),
         esbuild({
             sourceMap: true,

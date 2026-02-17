@@ -2,6 +2,8 @@
 
 > **Purpose**: This document provides precise, verified guidelines for LLMs building AI agents with the SmythOS SDK. All patterns are derived from official SmythOS documentation and examples.
 
+> The latest version of this AGENT.md can be downloaded from https://raw.githubusercontent.com/SmythOS/sre-project-templates/refs/heads/main/AGENTS.md
+
 ## Quick Reference
 
 ```typescript
@@ -176,7 +178,7 @@ console.log(result);
 
 ```typescript
 const response = await agent.prompt(
-  'What is the author of "The Great Gatsby"?'
+  'What is the author of "The Great Gatsby"?',
 );
 console.log(response);
 ```
@@ -672,10 +674,10 @@ const writerAgent = new Agent({
 });
 
 const research = await researchAgent.prompt(
-  "Research quantum computing advances"
+  "Research quantum computing advances",
 );
 const article = await writerAgent.prompt(
-  `Write an article based on: ${research}`
+  `Write an article based on: ${research}`,
 );
 ```
 
@@ -698,7 +700,7 @@ agent.addSkill({
     // 2. Generate answer with context
     const llm = agent.llm.OpenAI("gpt-4o");
     return await llm.prompt(
-      `Answer using only this context:\n\n${context}\n\nQuestion: ${question}`
+      `Answer using only this context:\n\n${context}\n\nQuestion: ${question}`,
     );
   },
 });

@@ -10,6 +10,25 @@ import regexTransformPlugin from './scripts/rollup-regex-transform.js';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 
+/**
+ * Shims `node:sqlite` for Node.js Mobile v18 which predates the built-in (added in v22.5).
+ * The stub only throws when actually instantiated, so unused code paths won't crash.
+ */
+function nodeSqliteShim() {
+    const VIRTUAL_ID = 'virtual:node-sqlite-shim';
+    return {
+        name: 'node-sqlite-shim',
+        resolveId(source) {
+            if (source === 'node:sqlite') return VIRTUAL_ID;
+            return null;
+        },
+        load(id) {
+            if (id !== VIRTUAL_ID) return null;
+            return 'class DatabaseSync { constructor() { throw new Error("node:sqlite is not available in this runtime."); } } export { DatabaseSync };';
+        },
+    };
+}
+
 const isProduction = process.env.NODE_ENV === 'production';
 const enableSEA = process.env.BUILD_SEA === 'true';
 const seaPlatforms = process.env.SEA_PLATFORMS ? process.env.SEA_PLATFORMS.split(',') : ['win', 'linux', 'macos'];
@@ -24,6 +43,7 @@ const config = {
     },
     // Bundle ALL dependencies to ensure portability
     plugins: [
+        nodeSqliteShim(),
         colorfulLogs('Smyth Builder'),
         resolve({
             browser: false, // Allow bundling of modules from `node_modules`

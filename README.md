@@ -1,13 +1,141 @@
-# SRE Project Templates
+This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-This repo is used to maintain the SRE Project Templates.
-Each branch contains a template for a specific project.
+# Getting Started
 
-# Available Templates
+> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
 
-- [Empty SDK Template](https://github.com/SmythOS/sre-project-templates/tree/sdk-empty) : Used to create a blank SDK project
-- [Minimal SDK Agent](https://github.com/SmythOS/sre-project-templates/tree/code-agent-minimal) : Comes with a minimal agent that showcases Agent implementation basics
-- [Interactive Book Assistant](https://github.com/SmythOS/sre-project-templates/tree/code-agent-book-assistant) : A fully functional agent with interactive chat
-- [Interactive Chat with Two Agents](https://github.com/SmythOS/sre-project-templates/tree/interactive-chat-agent-select) : Two different agents implementations, one using pure code, and one loaded from a .smyth file, you can select which agent to chat with
-- [Custom Components](https://github.com/SmythOS/sre-project-templates/tree/custom-components) : Implementing Custom Components
-- [SmythOS Electron Starter Project](https://github.com/SmythOS/sre-project-templates/tree/smythos-electron-starter-project) : A starter project for creating a desktop application using SmythOS
+## Step 1: Start Metro
+
+First, you will need to run **Metro**, the JavaScript build tool for React Native.
+
+To start the Metro dev server, run the following command from the root of your React Native project:
+
+```sh
+# Using npm
+npm start
+
+# OR using Yarn
+yarn start
+```
+
+## Step 2: Build and run your app
+
+With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+
+### Android
+
+```sh
+# Using npm
+npm run android
+
+# OR using Yarn
+yarn android
+```
+
+### iOS
+
+For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+
+The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+
+```sh
+bundle install
+```
+
+Then, and every time you update your native dependencies, run:
+
+```sh
+bundle exec pod install
+```
+
+For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+
+```sh
+# Using npm
+npm run ios
+
+# OR using Yarn
+yarn ios
+```
+
+If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+
+This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+
+## Step 3: Modify your app
+
+Now that you have successfully run the app, let's make changes!
+
+Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+
+When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+
+- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
+- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+
+## Congratulations! :tada:
+
+You've successfully run and modified your React Native App. :partying_face:
+
+### Now what?
+
+- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
+- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+
+# Frontend-Backend Architecture
+
+This React Native app integrates a Node.js server that runs directly on the mobile device using `nodejs-mobile-react-native`. Here's how the frontend communicates with the embedded Node.js server:
+
+## Node.js Mobile Server
+
+The Node.js server runs inside the mobile app and is located in `nodejs-assets/nodejs-project/`:
+
+- **`main.js`** - Initializes the server environment and configures storage paths for Android
+- **`main.cjs`** - Contains the actual Express server with SmythOS SDK integration
+- **Server Port**: `3000` (runs on the local device)
+
+## Frontend-Backend Communication
+
+The React Native frontend (`App.tsx`) communicates with the Node.js server via HTTP requests:
+
+### Message Endpoint
+- **URL**: `http://[LOCAL_PHONE_IP]:3000/message` (e.g., `http://192.168.100.26:3000/message`)
+- **Method**: `POST`
+- **Content-Type**: `application/json`
+- **Payload**: `{ message: "user input" }`
+- **Response**: `{ response: "AI response" }`
+
+### Communication Flow
+1. **Server Startup**: When the app launches, `nodejs.start('main.js')` initializes the Node.js server
+2. **User Input**: User types a message in the chat interface
+3. **API Call**: Frontend sends POST request to `/message` endpoint using the phone's local IP address
+4. **AI Processing**: Server processes the message using SmythOS SDK and Google AI
+5. **Response**: Server returns AI response in JSON format
+6. **UI Update**: Frontend displays the AI response in the chat interface
+
+### Key Features
+- **Local Processing**: All AI processing happens on-device via the embedded Node.js server
+- **IP-based Communication**: Frontend connects to the server using the phone's local network IP address
+- **Real-time Chat**: Interactive chat interface with loading states
+- **Error Handling**: Network errors are caught and displayed to the user
+- **Message History**: Chat messages are stored in component state
+
+## Configuration
+- The server URL in `App.tsx:60` uses your phone's local IP address for communication
+- Google AI API key is embedded in the server configuration
+- Storage directories are automatically created for Android app data
+- SmythOS SDK is configured to use the app's private storage directory
+
+# Troubleshooting
+
+If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+
+# Learn More
+
+To learn more about React Native, take a look at the following resources:
+
+- [React Native Website](https://reactnative.dev) - learn more about React Native.
+- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
+- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
+- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
+- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.

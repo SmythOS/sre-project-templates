@@ -1,0 +1,12 @@
+{
+  "name": "nodejs-mobile-server",
+  "version": "0.0.1",
+  "description": "Express server running in nodejs-mobile",
+  "main": "main.js",
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^2.7.0"
+  },
+  "author": "",
+  "license": "ISC"
+}

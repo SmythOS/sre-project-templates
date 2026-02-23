@@ -34,7 +34,7 @@
         "typescript": "^5.9.3"
     },
     "dependencies": {
-        "@SmythOS/sdk": "^1.3.30",
+        "@smythos/sdk": "^1.3.30",
         "axios": "^1.13.2",
         "chalk": "^5.4.1",
         "pkce-challenge": "^5.0.0"
